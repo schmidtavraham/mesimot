@@ -1,0 +1,15 @@
+{
+  "name": "mesimot-bot",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Telegram bot that pushes tasks into Mesimot's Supabase",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "dotenv": "^16.4.5",
+    "node-telegram-bot-api": "^0.66.0"
+  }
+}

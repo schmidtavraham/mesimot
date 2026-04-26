@@ -1,0 +1,290 @@
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.banner {
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+.banner.error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* טופס הוספה */
+.task-form {
+  display: grid;
+  grid-template-columns: 1fr 140px 140px auto;
+  gap: 8px;
+  background: var(--surface);
+  padding: 12px;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+.task-input,
+.task-select {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  outline: none;
+  transition: border-color .15s;
+}
+.task-input:focus,
+.task-select:focus {
+  border-color: var(--primary-2);
+}
+.task-submit {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-weight: 600;
+  transition: background .15s, transform .05s;
+}
+.task-submit:hover  { background: var(--primary-2); }
+.task-submit:active { transform: translateY(1px); }
+.task-submit:disabled { opacity: .6; cursor: progress; }
+
+/* פילטרים */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.filter-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-left: 4px;
+}
+.chip {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.85rem;
+  color: var(--text);
+  transition: all .15s;
+}
+.chip:hover { border-color: var(--primary-2); }
+.chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+/* לוח קטגוריות */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.column {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  min-height: 220px;
+}
+
+.column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.column-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.column-count {
+  background: #eef2ff;
+  color: var(--primary);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.column-empty {
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* כרטיס משימה */
+.task-card {
+  display: flex;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow .15s, transform .05s;
+}
+.task-card:hover { box-shadow: var(--shadow); }
+.task-card.done .task-title {
+  text-decoration: line-through;
+  color: var(--done);
+}
+
+.task-priority-bar {
+  width: 6px;
+  flex-shrink: 0;
+}
+
+.task-body {
+  flex: 1;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.task-title {
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.task-meta {
+  display: flex;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.task-source {
+  background: #ecfeff;
+  color: #0e7490;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.task-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 4px;
+}
+.task-controls select {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 8px;
+  background: #fff;
+  font-size: 0.8rem;
+}
+.task-delete {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--danger);
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.task-delete:hover {
+  background: #fef2f2;
+  border-color: var(--danger);
+}
+
+.loading {
+  text-align: center;
+  color: var(--muted);
+  padding: 30px;
+}
+
+.app-footer {
+  margin-top: 30px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 900px) {
+  .app { padding: 16px 12px 80px; }
+  .app-header h1 { font-size: 1.6rem; }
+
+  .board { grid-template-columns: 1fr; gap: 12px; }
+
+  .task-form {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 10px;
+  }
+  .task-input  { grid-column: 1 / -1; }
+  .task-submit { grid-column: 1 / -1; padding: 12px; }
+
+  .task-input,
+  .task-select,
+  .task-submit { font-size: 1rem; }
+
+  .filters { gap: 10px; padding: 10px; }
+  .filter-group { gap: 4px; }
+  .chip { padding: 7px 12px; font-size: 0.85rem; }
+
+  .task-controls select { padding: 8px; font-size: 0.85rem; }
+  .task-delete { width: 36px; height: 36px; }
+}
+
+/* תמיכה ב-safe area של iPhone (notch) במצב standalone */
+@supports (padding: max(0px)) {
+  .app {
+    padding-top:    max(24px, env(safe-area-inset-top));
+    padding-right:  max(20px, env(safe-area-inset-right));
+    padding-left:   max(20px, env(safe-area-inset-left));
+    padding-bottom: max(60px, env(safe-area-inset-bottom));
+  }
+}
