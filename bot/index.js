@@ -7,9 +7,10 @@ const {
   SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY,
   ALLOWED_CHAT_IDS = '',
+  BOT_OWNER_USER_ID,
 } = process.env;
 
-if (!TELEGRAM_BOT_TOKEN || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+if (!TELEGRAM_BOT_TOKEN || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !BOT_OWNER_USER_ID) {
   console.error('חסרים משתני סביבה. ראה bot/.env.example');
   process.exit(1);
 }
@@ -106,7 +107,9 @@ bot.onText(/^\/add(?:\s+(.+))?$/s, async (msg, match) => {
   }
 
   const { error } = await supabase.from('tasks').insert({
-    title, category, priority, status: 'open', source: 'telegram',
+    title, category, priority,
+    status: 'open', source: 'telegram',
+    user_id: BOT_OWNER_USER_ID,
   });
 
   if (error) {
@@ -127,6 +130,7 @@ bot.onText(/^\/list$/, async (msg) => {
   const { data, error } = await supabase
     .from('tasks')
     .select('title, category, priority, status, created_at')
+    .eq('user_id', BOT_OWNER_USER_ID)
     .neq('status', 'done')
     .order('created_at', { ascending: false })
     .limit(20);

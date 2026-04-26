@@ -35,6 +35,137 @@
   color: #991b1b;
   border: 1px solid #fecaca;
 }
+.banner.info {
+  background: #eef2ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.user-id {
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: 'Consolas', monospace;
+  font-size: 0.8rem;
+  word-break: break-all;
+}
+
+/* תפריט משתמש */
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.user-email {
+  font-size: 0.85rem;
+  color: var(--muted);
+  direction: ltr;
+}
+.link-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  color: var(--text);
+}
+.link-btn:hover { border-color: var(--primary-2); color: var(--primary); }
+.link-btn.danger { color: var(--danger); }
+.link-btn.danger:hover { background: #fef2f2; border-color: var(--danger); }
+
+/* מסך התחברות */
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #eef2ff 0%, #f6f7fb 100%);
+}
+.login-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 10px 40px rgba(79,70,229,.12);
+}
+.login-card h1 {
+  margin: 0 0 4px;
+  text-align: center;
+  font-size: 2rem;
+  color: var(--primary);
+}
+.login-subtitle {
+  margin: 0 0 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.login-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.login-form input {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color .15s;
+}
+.login-form input:focus { border-color: var(--primary-2); }
+
+.login-error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+}
+.login-info {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+}
+.login-submit {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.login-submit:hover  { background: var(--primary-2); }
+.login-submit:disabled { opacity: .6; }
+.login-switch {
+  display: block;
+  margin: 18px auto 0;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 0.85rem;
+  text-decoration: underline;
+}
 
 /* טופס הוספה */
 .task-form {
