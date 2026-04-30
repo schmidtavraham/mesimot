@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { PRIORITIES, labelOf } from '../lib/supabase.js';
 
 const PRIORITY_ORDER = ['high', 'medium', 'low'];
@@ -58,6 +58,7 @@ export default function TaskCard({
   canDrop,
 }) {
   const [hoverPos, setHoverPos] = useState(null); // 'before' | 'after' | null
+  const cardRef = useRef(null);
 
   const isDone       = task.status === 'done';
   const isInProgress = task.status === 'in_progress';
@@ -85,6 +86,9 @@ export default function TaskCard({
   const handleDragStart = (e) => {
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', task.id);
+    if (cardRef.current) {
+      e.dataTransfer.setDragImage(cardRef.current, 20, 20);
+    }
     onDragStart?.(task);
   };
 
@@ -108,15 +112,22 @@ export default function TaskCard({
 
   return (
     <li
+      ref={cardRef}
       className={`task-card ${isDone ? 'is-done' : ''} ${isInProgress ? 'is-progress' : ''} ${isDragging ? 'is-dragging' : ''} ${hoverPos ? `drop-${hoverPos}` : ''}`}
-      draggable={!isDone}
-      onDragStart={handleDragStart}
-      onDragEnd={() => { setHoverPos(null); onDragEnd?.(); }}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <span className="drag-handle" aria-hidden="true"><GripIcon /></span>
+      <span
+        className="drag-handle"
+        draggable={!isDone}
+        onDragStart={handleDragStart}
+        onDragEnd={() => { setHoverPos(null); onDragEnd?.(); }}
+        aria-hidden="true"
+        title="גרור לסידור מחדש"
+      >
+        <GripIcon />
+      </span>
 
       <button
         type="button"
