@@ -66,6 +66,7 @@ const SNOOZE_OPTIONS = [
 
 export default function AutomationCard({ task, onComplete, onSnooze, onDismiss, onReopen, onDelete }) {
   const [showSnooze, setShowSnooze] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const isOpen      = task.status === 'open';
   const isSnoozed   = task.status === 'snoozed';
@@ -75,6 +76,16 @@ export default function AutomationCard({ task, onComplete, onSnooze, onDismiss, 
   const ctx = task.context ?? {};
   const attachments = Array.isArray(task.attachments) ? task.attachments : [];
   const priority = priorityMeta(task.priority);
+  const draftText = typeof ctx.draft_text === 'string' ? ctx.draft_text : null;
+
+  const copyDraft = async () => {
+    if (!draftText) return;
+    try {
+      await navigator.clipboard.writeText(draftText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {}
+  };
 
   const handleSnoozePick = (days) => {
     setShowSnooze(false);
@@ -115,6 +126,18 @@ export default function AutomationCard({ task, onComplete, onSnooze, onDismiss, 
               <span className="auto-context-text">{String(ctx.what_to_do)}</span>
             </div>
           )}
+        </div>
+      )}
+
+      {draftText && (
+        <div className="auto-draft">
+          <div className="auto-draft-head">
+            <span className="auto-draft-label">תוכן הטיוטה</span>
+            <button type="button" className="auto-btn ghost" onClick={copyDraft}>
+              {copied ? '✓ הועתק' : 'העתק'}
+            </button>
+          </div>
+          <pre className="auto-draft-text">{draftText}</pre>
         </div>
       )}
 
