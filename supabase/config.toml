@@ -1,0 +1,13 @@
+# Supabase project config — Edge Functions section.
+# Run `supabase functions deploy ingest-task` after editing.
+
+project_id = "mesimot"
+
+[functions.ingest-task]
+# Webhook is called by external automations using our own Bearer token,
+# not Supabase JWT. We do auth ourselves inside the function.
+verify_jwt = false
+
+[functions.send-test-push]
+# Called from the browser by the logged-in user. JWT verification is fine.
+verify_jwt = true

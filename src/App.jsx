@@ -4,7 +4,10 @@ import TaskForm from './components/TaskForm.jsx';
 import Filters from './components/Filters.jsx';
 import CategoryColumn from './components/CategoryColumn.jsx';
 import Archive from './components/Archive.jsx';
+import Automations from './components/Automations.jsx';
+import Settings from './components/Settings.jsx';
 import Login from './components/Login.jsx';
+import { registerServiceWorker } from './lib/push.js';
 import './App.css';
 
 const PRIORITY_RANK = { high: 0, medium: 1, low: 2 };
@@ -26,9 +29,12 @@ export default function App() {
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [statusFilter,   setStatusFilter]   = useState('all');
 
-  const [showUserId, setShowUserId]   = useState(false);
-  const [showArchive, setShowArchive] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showUserId, setShowUserId]       = useState(false);
+  const [showArchive, setShowArchive]     = useState(false);
+  const [showFilters, setShowFilters]     = useState(false);
+  const [showAutomations, setShowAutomations] = useState(false);
+  const [showSettings, setShowSettings]   = useState(false);
+  const [openAutomationCount, setOpenAutomationCount] = useState(0);
 
   const [draggingTask, setDraggingTask] = useState(null);
 
@@ -42,8 +48,41 @@ export default function App() {
       setSession(s);
     });
 
-    return () => sub.subscription.unsubscribe();
+    registerServiceWorker().catch(() => {});
+
+    const onSwMessage = (e) => {
+      if (e.data?.type === 'AUTOMATION_TASK_OPEN') setShowAutomations(true);
+    };
+    navigator.serviceWorker?.addEventListener('message', onSwMessage);
+
+    return () => {
+      sub.subscription.unsubscribe();
+      navigator.serviceWorker?.removeEventListener('message', onSwMessage);
+    };
   }, []);
+
+  // Track open-automation count for the header badge (separate from the modal).
+  useEffect(() => {
+    if (!session) { setOpenAutomationCount(0); return; }
+
+    const refreshCount = async () => {
+      const { count } = await supabase
+        .from('automation_tasks')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', session.user.id)
+        .eq('status', 'open');
+      setOpenAutomationCount(count ?? 0);
+    };
+    refreshCount();
+
+    const channel = supabase
+      .channel('automation-tasks-count')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'automation_tasks', filter: `user_id=eq.${session.user.id}` },
+        refreshCount)
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [session]);
 
   const fetchTasks = async () => {
     const { data, error } = await supabase.from('tasks').select('*');
@@ -180,6 +219,9 @@ export default function App() {
         </div>
         <div className="user-menu">
           <span className="user-email">{session.user.email}</span>
+          <button className="link-btn" onClick={() => setShowSettings(true)}>
+            הגדרות
+          </button>
           <button className="link-btn" onClick={() => setShowUserId((v) => !v)}>
             {showUserId ? 'הסתר ID' : 'הצג ID לבוט'}
           </button>
@@ -212,6 +254,22 @@ export default function App() {
           </svg>
           <span>סינון</span>
           {filtersActive && <span className="dot-active" />}
+        </button>
+
+        <button
+          type="button"
+          className={`icon-btn ${openAutomationCount > 0 ? 'has-active' : ''}`}
+          onClick={() => setShowAutomations(true)}
+          title="אוטומציות"
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+               stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>
+          </svg>
+          <span>אוטומציות</span>
+          {openAutomationCount > 0 && (
+            <span className="archive-badge">{openAutomationCount}</span>
+          )}
         </button>
 
         <button
@@ -272,6 +330,21 @@ export default function App() {
           onClose={() => setShowArchive(false)}
           onRestore={restoreTask}
           onDelete={deleteTask}
+        />
+      )}
+
+      {showAutomations && (
+        <Automations
+          userId={session.user.id}
+          onClose={() => setShowAutomations(false)}
+          onCountChange={setOpenAutomationCount}
+        />
+      )}
+
+      {showSettings && (
+        <Settings
+          userId={session.user.id}
+          onClose={() => setShowSettings(false)}
         />
       )}
     </div>
