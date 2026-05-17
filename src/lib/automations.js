@@ -32,7 +32,9 @@ export const priorityMeta = (v) =>
 export async function refreshSnoozed() {
   // Optional — keeps "snoozed" rows that expired moving back to "open".
   // Safe to call on app load.
-  await supabase.rpc('refresh_snoozed_automation_tasks').catch(() => {});
+  try {
+    await supabase.rpc('refresh_snoozed_automation_tasks');
+  } catch {}
 }
 
 export async function listAutomationTasks(userId) {
