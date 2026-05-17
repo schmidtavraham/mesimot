@@ -1092,6 +1092,41 @@
   word-break: break-word;
 }
 
+.auto-draft {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.auto-draft-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.auto-draft-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+.auto-draft-text {
+  margin: 0;
+  font-family: inherit;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #fafbff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  border: 1px solid #eef2ff;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
 .auto-attachments {
   list-style: none;
   margin: 0;
