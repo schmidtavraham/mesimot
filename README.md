@@ -11,6 +11,7 @@
 - עדיפות (גבוהה/בינונית/נמוכה) וסטטוס (פתוח/בביצוע/הושלם)
 - סינון לפי עדיפות וסטטוס
 - סנכרון בזמן אמת בין דפדפן לבוט (Supabase Realtime)
+- **🆕 Automation Reminders** — Webhook ציבורי + Web Push. כל אוטומציה חיצונית (Claude Code, GitHub Actions, cron) יכולה לדחוף משימה עם הקשר מלא ולקפוץ כהתראה במכשיר. ראה [docs/AUTOMATIONS.md](docs/AUTOMATIONS.md) להתקנה ושימוש.
 
 ---
 

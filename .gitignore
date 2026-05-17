@@ -8,3 +8,4 @@ bot/.env
 .DS_Store
 *.log
 .claude/
+supabase/.temp/
