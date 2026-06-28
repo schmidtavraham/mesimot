@@ -38,32 +38,31 @@ export default function App() {
 
   const [draggingTask, setDraggingTask] = useState(null);
 
-  // --- DIAGNOSTIC (temporary) ---
-  const [diag, setDiag] = useState('init');
-
   useEffect(() => {
-    setDiag('calling getSession…');
-    const t0 = Date.now();
-    supabase.auth.getSession()
-      .then(({ data, error }) => {
-        setDiag(`getSession OK in ${Date.now() - t0}ms · session=${!!data?.session}${error ? ' · err=' + error.message : ''}`);
-        setSession(data.session);
-        setAuthReady(true);
-      })
-      .catch((e) => {
-        setDiag('getSession THREW: ' + (e?.message || String(e)));
-        setAuthReady(true);
-      });
+    let settled = false;
+    const finishAuth = (s) => {
+      if (settled) return;
+      settled = true;
+      setSession(s);
+      setAuthReady(true);
+    };
 
-    // watchdog: if getSession never resolves, say so on screen
-    const watchdog = setTimeout(() => {
-      setDiag((d) => d.startsWith('getSession OK') || d.startsWith('getSession THREW')
-        ? d
-        : 'getSession STILL PENDING after 6s — THIS IS THE HANG');
-    }, 6000);
+    supabase.auth.getSession()
+      .then(({ data }) => finishAuth(data.session))
+      .catch(() => finishAuth(null));
+
+    // Don't hang forever on "טוען..." if the backend is unreachable (e.g. a
+    // paused Supabase project). Give up after 8s and let the UI render.
+    const authTimeout = setTimeout(() => {
+      if (!settled) {
+        setError('השרת אינו זמין כרגע. נסה לרענן בעוד רגע.');
+        finishAuth(null);
+      }
+    }, 8000);
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
+      setAuthReady(true);
     });
 
     registerServiceWorker().catch(() => {});
@@ -74,7 +73,7 @@ export default function App() {
     navigator.serviceWorker?.addEventListener('message', onSwMessage);
 
     return () => {
-      clearTimeout(watchdog);
+      clearTimeout(authTimeout);
       sub.subscription.unsubscribe();
       navigator.serviceWorker?.removeEventListener('message', onSwMessage);
     };
@@ -104,25 +103,15 @@ export default function App() {
   }, [session]);
 
   const fetchTasks = async () => {
-    setDiag((d) => d + ' | fetchTasks…');
-    const t0 = Date.now();
-    try {
-      const { data, error } = await supabase.from('tasks').select('*');
-      if (error) {
-        setDiag((d) => d + ` | fetchTasks ERR: ${error.message}`);
-        setError(error.message);
-        setLoading(false);
-        return;
-      }
-      setDiag((d) => d + ` | fetchTasks OK ${Date.now() - t0}ms (${(data ?? []).length})`);
-      setTasks(data ?? []);
-      setError(null);
+    const { data, error } = await supabase.from('tasks').select('*');
+    if (error) {
+      setError(error.message);
       setLoading(false);
-    } catch (e) {
-      setDiag((d) => d + ' | fetchTasks THREW: ' + (e?.message || String(e)));
-      setError(String(e?.message || e));
-      setLoading(false);
+      return;
     }
+    setTasks(data ?? []);
+    setError(null);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -236,11 +225,7 @@ export default function App() {
 
   const filtersActive = priorityFilter !== 'all' || statusFilter !== 'all';
 
-  if (!authReady) return (
-    <div className="loading" style={{ padding: 20, direction: 'ltr', fontSize: 12, whiteSpace: 'pre-wrap', textAlign: 'left' }}>
-      טוען...{'\n\n'}DIAG ▸ {diag}
-    </div>
-  );
+  if (!authReady) return <p className="loading">טוען...</p>;
   if (!session)   return <Login />;
 
   return (
@@ -325,7 +310,7 @@ export default function App() {
       </div>
 
       {loading ? (
-        <p className="loading" style={{ direction: 'ltr', fontSize: 12, whiteSpace: 'pre-wrap' }}>טוען...{'\n'}DIAG ▸ {diag}</p>
+        <p className="loading">טוען...</p>
       ) : (
         <main className="board">
           {CATEGORIES.map((cat) => (
